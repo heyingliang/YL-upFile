@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>文件上传功能实现</title>
+	<meta name="viewport" content="initial-scale=1" >
+	<link rel="stylesheet" type="text/css" href="style/index.css">
+	<script type="text/javascript" src="js/YLupload.js"></script>
+	<script type="text/javascript" src="js/jquery-1.5.js"></script>
+</head>
+<body>
+<section class="upload">
+	<h1>文件拖拽上传插件YLupload</h1>
+	<div class="box">
+		<input type="file" multiple="multiple">
+		<figure class="icon"></figure>
+		<p>Drop your files here!</p>
+	</div>
+	<div id="test">
+		
+	</div>
+	<script type="text/javascript">
+		var params = {
+			dropCell: document.querySelector(".box"),
+			dragenter: function(){this.dropCell.style.borderColor = "#ff0000";},
+			dragleave: function(){this.dropCell.style.borderColor = "";},
+			url: "/php/file.php"
+		};
+		var test1 = YLupload(params);
+		test1.run();
+		/*document.querySelector(".box").addEventListener("dragenter",function(e){
+			e.preventDefault();
+			console.log("enter "+(e.currentTarget===this));
+		},false);
+		document.querySelector(".box").ondragover = function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			console.log("over");
+		};
+		document.querySelector(".box").ondrop = function(e){
+			e.stopPropagation();
+			e.preventDefault();
+			console.log("drop");
+		};*/
+		/*function sup(){
+			this.num = 1;
+		}
+		sup.prototype.run = function(){
+			this.num +=1;
+		};
+		var test1 = new sup();
+		var test2 = new sup();
+		test1.run();
+		console.log(test1.num);
+		console.log(test2.num);*/
+	</script>
+</section>
+</body>
+</html>

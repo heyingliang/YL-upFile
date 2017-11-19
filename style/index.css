@@ -1,0 +1,41 @@
+html,body,ul,li,ol,dl,dd,dt,p,h1,h2,h3,h4,h5,h6,form,img,figure{
+    margin: 0;
+    padding: 0
+}
+ul,ol {
+    list-style: none
+}
+
+.upload>h1{
+	padding: 10px 0;
+	text-align: center;
+}
+.upload .box{
+	width: 80%;
+	max-width: 400px;
+	min-height: 200px;
+	border: 2px dashed #616778;
+	border-radius: 20px;
+	margin: 0 auto;
+	color: #40444f;
+	cursor: pointer;
+}
+.upload .box:hover{
+	border-color: #ccc;
+}
+.upload .box.active{
+	border-color: #74b51c;
+}
+.upload .box .icon{
+	width: 80px;
+	height: 80px;
+	margin: 10px auto;
+	background-size: 80px;
+	background-image: url(../svg/icons.svg);
+}
+.upload .box p{
+	text-align: center;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 2em;
+}
