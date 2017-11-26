@@ -1,3 +1,7 @@
+/**
+ * author 何莹亮
+ * date 2017/11/18
+ */
 var YLupload = function(obj){
         return new YLupload.fn.init(obj);
     };
@@ -34,34 +38,38 @@ YLupload.fn = YLupload.prototype = {
                 e.preventDefault();
                 opts.dragleave(e);
                 that.getFiles(e);
-                that.upload();
             },false);
         }
 
-        if(opts.inputFile){
-            opts.inputFile.addEventListener("change",function(e){},false);
-        }
+        opts.inputFile && opts.inputFile.addEventListener("change",function(e){that.getFiles(e)},false);
 
         return this;
     },
     upload: function(){
         var that = this,
             opts = this.opts,
-            size = 0;
-
+            amount = 0,
+            current = 0;
         
         for(var i = 0, file; file = this.files[i]; i++){
             // 文件总大小
-            size += file.size;
+            amount += file.size;
             // 逐一上传
             (function(file){
                 var xhr = new XMLHttpRequest();
-                xhr.upload.addEventListener("process",function(e){
+                xhr.upload.addEventListener("progress", function(e){
+                    that.up = ((current + e.loaded) / amount).toFixed(4);
                     opts.upProcess(file,e.loaded,e.total);
                 },false);
+
+                xhr.upload.addEventListener("loadend",function(e){
+                    
+                },false);
+
                 xhr.onreadystatechange = function(e){
                     if(xhr.readyState == 4){
                         if(xhr.status == 200){
+                            current += file.size;
                             opts.success(file,xhr.responseText);
                             that.deleteFile(file);
                             if (!that.files.length) { // 全部上传完成
@@ -97,9 +105,12 @@ YLupload.fn = YLupload.prototype = {
     getFiles: function(e){
         var files = e.target.files || e.dataTransfer.files;
         for (var i = 0, file; file = files[i]; i++) {
+            file.index = i;
             this.files.push(file);
         }
-        this.opts.selected(files);
+        this.opts.selected(this.files);
+
+        this.opts.autoUp && this.upload();  // 立即上传？
     }
 };
 
@@ -154,13 +165,14 @@ YLupload.assign({
         upButton: null,
         url: "",
         filter: "/",
+        autoUp: false,
         success: function(){},
         fail: function(){},
         complete: function(){},
         dragenter: function(){},
         dragleave: function(){},
         selected: function(){},
-        upProcess:function(){},
+        upProcess: function(){},
         deleted: function(){}
     }
 });

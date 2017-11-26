@@ -1,12 +1,15 @@
 <?php
 $fn = (isset($_SERVER['HTTP_FILENAME']) ? $_SERVER['HTTP_FILENAME'] : false);
-var_dump($_SERVER);
+$src = realpath("../upFile/");
+
+$file_name = urldecode($fn);
+
 if ($fn) {
 	file_put_contents(
-		$fn,
+		$src."\\".$fn,
 		file_get_contents('php://input')
 	);
-	echo "$fn uploaded";
+	echo "$file_name uploaded";
 	exit();
 }
 else {

@@ -6,7 +6,6 @@
 	<meta name="viewport" content="initial-scale=1" >
 	<link rel="stylesheet" type="text/css" href="style/index.css">
 	<script type="text/javascript" src="js/YLupload.js"></script>
-	<script type="text/javascript" src="js/jquery-1.5.js"></script>
 </head>
 <body>
 <section class="upload">
@@ -16,18 +15,39 @@
 		<figure class="icon"></figure>
 		<p>Drop your files here!</p>
 	</div>
-	<div id="test">
-		
+	<div id="progress">
 	</div>
 	<script type="text/javascript">
+		var box = document.querySelector(".box"),
+			inputfile = document.querySelector(".box input"),
+			pro = document.getElementById('progress');
 		var params = {
-			dropCell: document.querySelector(".box"),
+			inputFile: inputfile,
+			dropCell: box,
 			dragenter: function(){this.dropCell.style.borderColor = "#ff0000";},
 			dragleave: function(){this.dropCell.style.borderColor = "";},
-			url: "/php/file.php"
+			url: "php/file.php",
+			autoUp: true,
+			selected: function(files){
+				var ul = document.createElement("ul"),
+					li;
+				for (var i = 0; i < files.length; i++) {
+					li = document.createElement("li");
+					li.innerHTML = "<span>" + files[i].name + "</span><div><div class='bar'></div></div>";
+					ul.appendChild(li);
+				}
+				pro.innerHTML = '';
+				pro.appendChild(ul);
+			},
+			upProcess: function(file,loaded,total){
+				document.querySelectorAll(".bar")[file.index].style.width = (loaded / total * 100).toFixed(2) + "%";
+			}
 		};
-		var test1 = YLupload(params);
-		test1.run();
+		var test1 = YLupload(params).run();
+
+		box.onclick = function(){
+			inputfile.click();
+		}
 		/*document.querySelector(".box").addEventListener("dragenter",function(e){
 			e.preventDefault();
 			console.log("enter "+(e.currentTarget===this));
