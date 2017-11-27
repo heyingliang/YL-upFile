@@ -26,16 +26,18 @@ YLupload.fn = YLupload.prototype = {
             opts.dropCell.addEventListener("dragover",function(e){
                 e.stopPropagation();
                 e.preventDefault();
-                opts.dragenter(e);
+
+                opts.dragenter(e); // 回调
             },false);
 
             opts.dropCell.addEventListener("dragleave",function(e){
                 e.stopPropagation();
-                opts.dragleave(e);
+                opts.dragleave(e); // 回调
             },false);
 
             opts.dropCell.addEventListener("drop",function(e){
                 e.preventDefault();
+                // 回调与获取文件
                 opts.dragleave(e);
                 that.getFiles(e);
             },false);
@@ -51,6 +53,8 @@ YLupload.fn = YLupload.prototype = {
             amount = 0,
             current = 0;
         
+        opts.readyUp(this.files);
+
         for(var i = 0, file; file = this.files[i]; i++){
             // 文件总大小
             amount += file.size;
@@ -158,6 +162,7 @@ YLupload.assign({
      * @param {Function}   success   上传成功时的回调函数
      * @param {Function}   fail      上传失败时的回调函数
      * @param {Function}   complete  上传完成时的回调函数
+     * @param {Function}   dragenter 移入时回调
      */
     defaults: {
         inputFile: null,
@@ -166,14 +171,15 @@ YLupload.assign({
         url: "",
         filter: "/",
         autoUp: false,
-        success: function(){},
-        fail: function(){},
+        success: function(res){},
+        fail: function(res){},
         complete: function(){},
         dragenter: function(){},
         dragleave: function(){},
-        selected: function(){},
-        upProcess: function(){},
-        deleted: function(){}
+        selected: function(files){},
+        upProcess: function(file,loaded,total){},
+        deleted: function(files){},
+        readyUp: function(files){}
     }
 });
 

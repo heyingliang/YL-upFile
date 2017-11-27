@@ -9,70 +9,54 @@
 </head>
 <body>
 <section class="upload">
-	<h1>文件拖拽上传插件YLupload</h1>
+	<h1>YLupload的Demo</h1>
 	<div class="box">
 		<input type="file" multiple="multiple">
 		<figure class="icon"></figure>
 		<p>Drop your files here!</p>
 	</div>
-	<div id="progress">
+	<div id="files">
 	</div>
 	<script type="text/javascript">
 		var box = document.querySelector(".box"),
-			inputfile = document.querySelector(".box input"),
-			pro = document.getElementById('progress');
+			file = document.getElementById('files');
+			// 参数
 		var params = {
-			inputFile: inputfile,
+			inputFile: document.querySelector(".box input"),
 			dropCell: box,
-			dragenter: function(){this.dropCell.style.borderColor = "#ff0000";},
-			dragleave: function(){this.dropCell.style.borderColor = "";},
-			url: "php/file.php",
+			dragenter: function(){
+				this.dropCell.style.borderColor = "#ff0000";
+			},
+			dragleave: function(){
+				this.dropCell.style.borderColor = "";
+			},
 			autoUp: true,
-			selected: function(files){
+			url: "php/file.php",
+			readyUp: function(files){
 				var ul = document.createElement("ul"),
 					li;
 				for (var i = 0; i < files.length; i++) {
 					li = document.createElement("li");
+					li.className = "progress";
 					li.innerHTML = "<span>" + files[i].name + "</span><div><div class='bar'></div></div>";
 					ul.appendChild(li);
 				}
-				pro.innerHTML = '';
-				pro.appendChild(ul);
+				file.innerHTML = ''; // 清空原有的
+				file.appendChild(ul);
 			},
 			upProcess: function(file,loaded,total){
+				document.querySelectorAll(".progress")[file.index].classList.add("pending");
 				document.querySelectorAll(".bar")[file.index].style.width = (loaded / total * 100).toFixed(2) + "%";
+			},
+			success: function(file,response){
+				document.querySelectorAll(".progress")[file.index].className = "progress success";
 			}
 		};
 		var test1 = YLupload(params).run();
 
 		box.onclick = function(){
-			inputfile.click();
+			params.inputFile.click();
 		}
-		/*document.querySelector(".box").addEventListener("dragenter",function(e){
-			e.preventDefault();
-			console.log("enter "+(e.currentTarget===this));
-		},false);
-		document.querySelector(".box").ondragover = function(e){
-			e.preventDefault();
-			e.stopPropagation();
-			console.log("over");
-		};
-		document.querySelector(".box").ondrop = function(e){
-			e.stopPropagation();
-			e.preventDefault();
-			console.log("drop");
-		};*/
-		/*function sup(){
-			this.num = 1;
-		}
-		sup.prototype.run = function(){
-			this.num +=1;
-		};
-		var test1 = new sup();
-		var test2 = new sup();
-		test1.run();
-		console.log(test1.num);
-		console.log(test2.num);*/
 	</script>
 </section>
 </body>
