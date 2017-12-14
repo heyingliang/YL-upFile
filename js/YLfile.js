@@ -39,9 +39,9 @@ var _uid = 0;
 
         /* 监听 */
         listen : function(callback){
-            var that = this,
-                drop = this.$drop,
-                filesBtn = this.$filesBtn;
+            var that = this;
+            var drop = this.$drop;
+            var filesBtn = this.$filesBtn;
 
             drop && (
                 drop.addEventListener('dragover', function(e){
@@ -101,10 +101,10 @@ var _uid = 0;
 
         /* 上传 */
         upload: function(){
-            var that = this,
-                opts = this.opts,
-                amount = 0,
-                current = 0;
+            var that = this;
+            var opts = this.opts;
+            var amount = 0;
+            var current = 0;
             
             opts.readyUp(this.files);
 
@@ -114,12 +114,13 @@ var _uid = 0;
                 // 逐一上传
                 (function(file){
                     var xhr = new XMLHttpRequest();
-                    xhr.addEventListener("progress", function(e){
+                    // 上传过程
+                    xhr.upload.addEventListener("progress", function(e){
                         that.up = ((current + e.loaded) / amount).toFixed(4);
                         opts.upProcess(file,e.loaded,e.total);
                     },false);
-
-                    xhr.addEventListener("loadend",function(e){
+                    // 上传结束
+                    xhr.upload.addEventListener("loadend",function(e){
                         
                     },false);
 
@@ -184,10 +185,10 @@ var _uid = 0;
         if (target == null) {
             throw new TypeError('Cannot convert undefined or null to object');
         }
-        var to = Object(target),
-            nextSource = {},
-            index = 1,
-            len = arguments.length;
+        var to = Object(target);
+        var nextSource = {};
+        var index = 1;
+        var len = arguments.length;
         // 参数只有一个时，拷贝到YLfile
         if(len == index){
             to = this;
@@ -209,9 +210,9 @@ var _uid = 0;
     YLfile.assign({
         /* 节流 */
         throttle: function(){
-            var isClear = arguments[0],
-                fn,
-                param;
+            var isClear = arguments[0];
+            var fn;
+            var param;
             if (typeof isClear === 'boolean') {
                 fn = arguments[1];
                 fn._throttleID && clearTimeout(fn._throttleID)
@@ -237,7 +238,7 @@ var _uid = 0;
         MVVM : function(opt){
             this.mod = document.querySelector(opt.el);
             this.data = opt.data || {};
-            this.renderDom(this.dom);
+            this.renderDom(this.mod);
         }
     });
 
@@ -249,10 +250,25 @@ var _uid = 0;
         },
         render : function(node){
             var self = this;
-            var sTag = selft.init.sTag;
-            var eTag = selft.init.eTag;
-
-            var matchs = node.textContent.split
+            var reg = new RegExp(self.init.sTag + '(\\w\+)' + self.init.eTag, 'g');
+            node.textContent = node.textContent.replace(reg, function(match, p1){
+                window['_uid'+_uid++] = node;
+                return self.data[p1] ? self.data[p1] : '';
+            });
+        },
+        renderDom : function(dom){
+            var self = this;
+            var attrs = dom.attributes;
+            var nodes = dom.childNodes;
+            Array.prototype.forEach.call(attrs, function(item){
+                self.render(item);
+            });
+            Array.prototype.forEach.call(nodes, function(item){
+                if(item.nodeType === 1){
+                    return self.renderDom(item);
+                }
+                self.render(item);
+            });
         }
     };
 

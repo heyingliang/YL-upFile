@@ -19,8 +19,8 @@
         
     </div>
     <div id="plan">
-        <h2>{{mes}}</h2>
-        <a href="{{url}}">点击</a>
+        <h2>{{mes}}da{{url}}</h2>
+        <a href="{{url}}">点击{{mes}}</a>
     </div>
     <script type="text/javascript">
         var YL = YLfile({
@@ -48,7 +48,7 @@
         YL.$drop.onclick = function(){ YL.$filesBtn.click() };
 
         // 待完善。。。
-        var app = YLfile.MVVM({
+        var app = new YLfile.MVVM({
             el : '#plan',
             data : {
                 mes : 'MVVM？呵呵！',
@@ -63,114 +63,8 @@
                 url : '/index.html'
             }
         });*/
-        /*var A = {};
-        A.root = document.getElementById('preview');
-        A.strategy = {
-            'listPart' : function(data){
-                var s = document.createElement("div"),
-                    ul = '',
-                    ldata = data.data.li,
-                    // 模块模板
-                    tpl = [
-                        '<h2>{#h2#}</h2>',
-                        '<p>{#p#}</p>',
-                        '<ul>{#ul#}</ul>'
-                    ].join(''),
-                    // 列表模板
-                    liTpl = [
-                        '<li>',
-                            '<strong>{#strong#}</strong>',
-                            '<span>{#span#}</span>',
-                        '</li>'
-                    ].join('');
-                data.id && (s.id = data.id);
-                for(var i = 0, len = ldata.length; i < len; i++){
-                    if(ldata[i].strong || ldata[i].span){
-                        ul += A.formateString(liTpl, ldata[i]);
-                    }
-                }
-                data.data.ul = ul;
-                s.innerHTML = A.formateString(tpl, data.data);
-                A.root.appendChild(s);
-            },
-            'codePart' :　function(){}
-        };
-        A.init = function(data){
-            this.strategy[data.type](data);
-        };
-        A.formateString = function(str, data){
-            return str.replace(/\{#(\w+)#\}/g, function(match, key){
-                return data[key] === undefined ? '' : data[key];
-            });
-        };
-        A.strategy.listPart({
-            data : {
-                li : [{
-                    strong : '加粗',
-                    span : '内敛'
-                }],
-                h2 : "hah"
-            }
-        });*/
     </script>
-<!-- 
-    <script type="text/javascript">
-        var file = document.getElementById('files');
-            // 参数配置
-        var params = {
-            paper: ".upload",
-            inputFile: ".box input",
-            dropCell: ".box",
-            dragenter: function(){
-                console.log("进入"); 
-                // this.dropCell.style.borderColor = "#ff0000";
-            },
-            dragleave: function(){
-                console.log("");
-                // this.dropCell.style.borderColor = "";
-            },
-            autoUp: false,
-            url: "php/file.php",
-            selected: function(files){
-                var read = new FileReader();
-                read.onprogress = function(e){
-                    // console.log(e.loaded);
-                };
-                read.onload = function(e){
-                    /*var img = new Image();
-                    img.src = e.target.result;
-                    document.getElementById("show").appendChild(img);*/
-                };
-                read.readAsDataURL(files[0]);
-            },
-            readyUp: function(files){
-                var ul = document.createElement("ul"),
-                    li;
-                for (var i = 0; i < files.length; i++) {
-                    li = document.createElement("li");
-                    li.className = "progress";
-                    li.innerHTML = "<span>" + files[i].name + "</span><div><div class='bar'></div></div>";
-                    ul.appendChild(li);
-                }
-                file.innerHTML = ''; // 清空原有的
-                file.appendChild(ul);
-            },
-            upProcess: function(file,loaded,total){
-                document.querySelectorAll(".progress")[file.index].classList.add("pending");
-                document.querySelectorAll(".bar")[file.index].style.width = (loaded / total * 100).toFixed(2) + "%";
-            },
-            success: function(file,response){
-                document.querySelectorAll(".progress")[file.index].className = "progress success";
-            }
-        };
-        // 运行
-        var text1 = YLfile(params).run(function(e){console.log(e);});
-        params.dropCell.onclick = function(){
-            params.inputFile.click();
-        }
-        
-    </script>
- -->
+
 </section>
 <div class="rang">
     
