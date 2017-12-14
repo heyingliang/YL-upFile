@@ -48,12 +48,13 @@
         YL.$drop.onclick = function(){ YL.$filesBtn.click() };
 
         // 待完善。。。
+        var data = {
+            mes : 'MVVM？呵呵！',
+            url : '/index.html'
+        }
         var app = new YLfile.MVVM({
             el : '#plan',
-            data : {
-                mes : 'MVVM？呵呵！',
-                url : '/index.html'
-            }
+            data : data
         });
 
         /*var app2 = YLfile.MVVM({

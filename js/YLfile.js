@@ -232,27 +232,52 @@ var _uid = 0;
                     fn.apply(p.context, p.args);
                 }, p.time);
             }
-        },
-
-        /* MVVM */
-        MVVM : function(opt){
-            this.mod = document.querySelector(opt.el);
-            this.data = opt.data || {};
-            this.renderDom(this.mod);
         }
+
     });
 
+    var Mediator = function(){
+        var cache = {};
+        return {
+            register : function(type, node, tpl){
+                (typeof cache[type] === 'undefined') && (cache[type] = []);
+                cache[type].push({
+                    node : node,
+                    tpl : tpl
+                });
+            },
+            send : function(that, type){
+                if(cache[type]){
+                    for (var i = 0; i < cache[type].length; i++) {
+                        console.log(cache[type][i]);
+                        that.render(cache[type][i]);
+                    }
+                }
+            }
+        };
+    }();
+    /* MVVM */
+    YLfile.MVVM = function(opt){
+        this.mod = document.querySelector(opt.el);
+        this.data = opt.data || {};
+        this.renderDom(this.mod);
+        this.monitor(opt.data);
+    }
     /* 模板 */
     YLfile.MVVM.prototype = {
         init : {
             sTag : '{{',
             eTag : '}}'
         },
-        render : function(node){
+        render : function(el, flg){
+            // 是否为发布状态下解析
+            var node = el.node || el;
+            var tpl = el.tpl || node.textContent;
+
             var self = this;
             var reg = new RegExp(self.init.sTag + '(\\w\+)' + self.init.eTag, 'g');
-            node.textContent = node.textContent.replace(reg, function(match, p1){
-                window['_uid'+_uid++] = node;
+            node.textContent = tpl.replace(reg, function(match, p1){
+                flg && Mediator.register(p1, node, tpl); // 是否订阅？注：只在模板解析时进行订阅
                 return self.data[p1] ? self.data[p1] : '';
             });
         },
@@ -261,14 +286,40 @@ var _uid = 0;
             var attrs = dom.attributes;
             var nodes = dom.childNodes;
             Array.prototype.forEach.call(attrs, function(item){
-                self.render(item);
+                self.render(item, true);
             });
             Array.prototype.forEach.call(nodes, function(item){
                 if(item.nodeType === 1){
                     return self.renderDom(item);
                 }
-                self.render(item);
+                self.render(item, true);
             });
+        },
+        defined : function(obj, key){
+            var self = this;
+            var value = obj[key];
+            Object.defineProperty(obj, key, {
+                enumerable : true,
+                get : function(){
+                    return value;
+                },
+                set : function(newvalue){
+                    // 递归出口
+                    if(value == newvalue){
+                        return;
+                    }
+                    // 赋值
+                    value = newvalue;
+                    // console.log(self.render);
+                    Mediator.send(self,key);
+                }
+            });
+        },
+        monitor : function(obj){
+            for(var key in obj){
+                this.defined(obj, key);
+            }
+            console.log(obj);
         }
     };
 
