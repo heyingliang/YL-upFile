@@ -1,63 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>文件上传功能实现</title>
-	<meta name="viewport" content="initial-scale=1" >
-	<link rel="stylesheet" type="text/css" href="style/index.css">
-	<script type="text/javascript" src="js/YLupload.js"></script>
+    <meta charset="UTF-8">
+    <title>文件上传功能实现</title>
+    <meta name="viewport" content="initial-scale=1" >
+    <link rel="stylesheet" type="text/css" href="style/index.css">
+    <script type="text/javascript" src="js/YLfile.js"></script>
 </head>
 <body>
 <section class="upload">
-	<h1>YLupload的Demo</h1>
-	<div class="box">
-		<input type="file" multiple="multiple">
-		<figure class="icon"></figure>
-		<p>Drop your files here!</p>
-	</div>
-	<div id="files">
-	</div>
-	<script type="text/javascript">
-		var box = document.querySelector(".box"),
-			file = document.getElementById('files');
-			// 参数
-		var params = {
-			inputFile: document.querySelector(".box input"),
-			dropCell: box,
-			dragenter: function(){
-				this.dropCell.style.borderColor = "#ff0000";
-			},
-			dragleave: function(){
-				this.dropCell.style.borderColor = "";
-			},
-			autoUp: true,
-			url: "php/file.php",
-			readyUp: function(files){
-				var ul = document.createElement("ul"),
-					li;
-				for (var i = 0; i < files.length; i++) {
-					li = document.createElement("li");
-					li.className = "progress";
-					li.innerHTML = "<span>" + files[i].name + "</span><div><div class='bar'></div></div>";
-					ul.appendChild(li);
-				}
-				file.innerHTML = ''; // 清空原有的
-				file.appendChild(ul);
-			},
-			upProcess: function(file,loaded,total){
-				document.querySelectorAll(".progress")[file.index].classList.add("pending");
-				document.querySelectorAll(".bar")[file.index].style.width = (loaded / total * 100).toFixed(2) + "%";
-			},
-			success: function(file,response){
-				document.querySelectorAll(".progress")[file.index].className = "progress success";
-			}
-		};
-		var test1 = YLupload(params).run();
+    <h1>YLfile的Demo</h1>
+    <div class="box">
+        <input type="file" multiple="multiple">
+        <figure class="icon"></figure>
+        <p>Drop your files here!</p>
+    </div>
+    <div id="preview">
+        
+    </div>
+    <div id="plan">
+        <h2>{{mes}}</h2>
+        <a href="{{url}}">点击</a>
+    </div>
+    <script type="text/javascript">
+        var YL = YLfile({
+                paper : ".upload",
+                dropCell : ".box",
+                filesButton : ".box input",
+                showCell : "#preview"
+            }).listen();
 
-		box.onclick = function(){
-			params.inputFile.click();
-		}
-	</script>
+        YL.dragenter(function(e){
+            console.log("进入");
+            YL.$drop.style.borderColor = "#ff0000";
+        });
+
+        YL.dragleave(function(e){
+            console.log("离开");
+            YL.$drop.style.borderColor = "";
+        });
+
+        YL.drop(function(e){
+            console.log("放下");
+            YL.$drop.style.borderColor = "";
+        });
+
+        YL.$drop.onclick = function(){ YL.$filesBtn.click() };
+
+        // 待完善。。。
+        var app = YLfile.MVVM({
+            el : '#plan',
+            data : {
+                mes : 'MVVM？呵呵！',
+                url : '/index.html'
+            }
+        });
+
+        /*var app2 = YLfile.MVVM({
+            el : '#plan',
+            data : {
+                mes : 'MVVM？呵呵！',
+                url : '/index.html'
+            }
+        });*/
+        /*var A = {};
+        A.root = document.getElementById('preview');
+        A.strategy = {
+            'listPart' : function(data){
+                var s = document.createElement("div"),
+                    ul = '',
+                    ldata = data.data.li,
+                    // 模块模板
+                    tpl = [
+                        '<h2>{#h2#}</h2>',
+                        '<p>{#p#}</p>',
+                        '<ul>{#ul#}</ul>'
+                    ].join(''),
+                    // 列表模板
+                    liTpl = [
+                        '<li>',
+                            '<strong>{#strong#}</strong>',
+                            '<span>{#span#}</span>',
+                        '</li>'
+                    ].join('');
+                data.id && (s.id = data.id);
+                for(var i = 0, len = ldata.length; i < len; i++){
+                    if(ldata[i].strong || ldata[i].span){
+                        ul += A.formateString(liTpl, ldata[i]);
+                    }
+                }
+                data.data.ul = ul;
+                s.innerHTML = A.formateString(tpl, data.data);
+                A.root.appendChild(s);
+            },
+            'codePart' :　function(){}
+        };
+        A.init = function(data){
+            this.strategy[data.type](data);
+        };
+        A.formateString = function(str, data){
+            return str.replace(/\{#(\w+)#\}/g, function(match, key){
+                return data[key] === undefined ? '' : data[key];
+            });
+        };
+        A.strategy.listPart({
+            data : {
+                li : [{
+                    strong : '加粗',
+                    span : '内敛'
+                }],
+                h2 : "hah"
+            }
+        });*/
+    </script>
+<!-- 
+    <script type="text/javascript">
+        var file = document.getElementById('files');
+            // 参数配置
+        var params = {
+            paper: ".upload",
+            inputFile: ".box input",
+            dropCell: ".box",
+            dragenter: function(){
+                console.log("进入"); 
+                // this.dropCell.style.borderColor = "#ff0000";
+            },
+            dragleave: function(){
+                console.log("");
+                // this.dropCell.style.borderColor = "";
+            },
+            autoUp: false,
+            url: "php/file.php",
+            selected: function(files){
+                var read = new FileReader();
+                read.onprogress = function(e){
+                    // console.log(e.loaded);
+                };
+                read.onload = function(e){
+                    /*var img = new Image();
+                    img.src = e.target.result;
+                    document.getElementById("show").appendChild(img);*/
+                };
+                read.readAsDataURL(files[0]);
+            },
+            readyUp: function(files){
+                var ul = document.createElement("ul"),
+                    li;
+                for (var i = 0; i < files.length; i++) {
+                    li = document.createElement("li");
+                    li.className = "progress";
+                    li.innerHTML = "<span>" + files[i].name + "</span><div><div class='bar'></div></div>";
+                    ul.appendChild(li);
+                }
+                file.innerHTML = ''; // 清空原有的
+                file.appendChild(ul);
+            },
+            upProcess: function(file,loaded,total){
+                document.querySelectorAll(".progress")[file.index].classList.add("pending");
+                document.querySelectorAll(".bar")[file.index].style.width = (loaded / total * 100).toFixed(2) + "%";
+            },
+            success: function(file,response){
+                document.querySelectorAll(".progress")[file.index].className = "progress success";
+            }
+        };
+        // 运行
+        var text1 = YLfile(params).run(function(e){console.log(e);});
+        params.dropCell.onclick = function(){
+            params.inputFile.click();
+        }
+        
+    </script>
+ -->
 </section>
+<div class="rang">
+    
+</div>
 </body>
 </html>

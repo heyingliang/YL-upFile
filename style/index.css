@@ -42,10 +42,10 @@ ul,ol {
 	font-size: 18px;
 	line-height: 2em;
 }
-#files{
+#plan{
 	margin-top: 30px;
 }
-#files ul li{
+#plan ul li{
 	width: 70%;
 	height: 30px;
 	margin: 6px auto;
@@ -53,7 +53,7 @@ ul,ol {
 	border: 2px solid #cfdbde;
 	background-color: #f0f0f0;
 }
-#files ul li span{
+#plan ul li span{
 	float: left;
 	width: 30%;
 	margin-left: 5%;
@@ -63,7 +63,7 @@ ul,ol {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#files ul li>div{
+#plan ul li>div{
 	float: right;
 	width: 60%;
 	height: 20px;
@@ -71,7 +71,7 @@ ul,ol {
 	border-radius: 15px;
 	overflow: hidden;
 }
-#files ul li.progress .bar{
+#plan ul li.progress .bar{
 	width: 0;
 	height: 100%;
 	animation: progress 4s linear infinite;
@@ -85,10 +85,10 @@ ul,ol {
 	background-size: 50px 100%;
 }
 
-#files ul li.progress.pending .bar{
+#plan ul li.progress.pending .bar{
 	background-color: #13f1da;
 }
-#files ul li.progress.success .bar{
+#plan ul li.progress.success .bar{
 	background-image: none;
 	animation: none;
 	background-color: #1ae030;
